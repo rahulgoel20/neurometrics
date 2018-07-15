@@ -1,6 +1,6 @@
 import numpy as np
 from os import path
-from neurometrics.matlabcommand import matlab_command
+from neurometrics_rg.matlabcommand import matlab_command
 from tempfile import mkdtemp
 from shutil import rmtree
 from sklearn.base import BaseEstimator, ClassifierMixin, is_classifier
