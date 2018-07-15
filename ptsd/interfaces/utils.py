@@ -1,8 +1,8 @@
 from nipype.interfaces.base import BaseInterface, BaseInterfaceInputSpec, traits, File, TraitedSpec, DynamicTraitedSpec, Undefined, InputMultiPath
 from nipype.utils.filemanip import split_filename
 
-import neurometrics_rg.utility
-import neurometrics_rg.ANOVA
+import ptsd.utility
+import ptsd.ANOVA
 import pickle
 import gzip
 import os
@@ -26,7 +26,7 @@ class FixDimensions(BaseInterface):
 
     def _run_interface(self, runtime):
         nim = nibabel.load(self.inputs.in_file)
-        fixed = neurometrics_rg.utility.arr2nifti(nim.get_data()[:, None, None])
+        fixed = ptsd.utility.arr2nifti(nim.get_data()[:, None, None])
         fixed.to_filename(self._list_outputs()['out_file'])
         return runtime
 
@@ -72,8 +72,8 @@ class LtaToXfm(BaseInterface):
     output_spec = LtaToXfmOutputSpec
 
     def _run_interface(self, runtime):
-        arr = neurometrics_rg.utility.load_lta(self.inputs.in_file)
-        neurometrics_rg.utility.save_xfm(arr[:3, :], self._list_outputs()['out_file'])        
+        arr = ptsd.utility.load_lta(self.inputs.in_file)
+        ptsd.utility.save_xfm(arr[:3, :], self._list_outputs()['out_file'])        
         return runtime
     
     def _list_outputs(self):
@@ -99,7 +99,7 @@ class NiftiToDataset(BaseInterface):
     output_spec = NiftiToDatasetOutputSpec
 
     def _run_interface(self, runtime):
-        ds = neurometrics_rg.ANOVA.nifti_to_dataset(self.inputs.nifti_file,
+        ds = ptsd.ANOVA.nifti_to_dataset(self.inputs.nifti_file,
                                                     self.inputs.attributes_file,
                                                     self.inputs.annot_file if self.inputs.annot_file is not Undefined else None,
                                                     self.inputs.subject_id,
@@ -125,14 +125,14 @@ class JoinDatasets(BaseInterface):
     output_spec = JoinDatasetsOutputSpec
 
     def _run_interface(self, runtime):
-        datasets = [neurometrics_rg.ANOVA.load_dataset(d)
+        datasets = [ptsd.ANOVA.load_dataset(d)
                     for d in self.inputs.input_datasets]
         if self.inputs.join_hemispheres:
             assert(len(datasets) == 2)
-            ds = neurometrics_rg.ANOVA.join_hemispheres(datasets[0],
+            ds = ptsd.ANOVA.join_hemispheres(datasets[0],
                                                         datasets[1])
         else:
-            ds = neurometrics_rg.ANOVA.join_datasets(datasets)
+            ds = ptsd.ANOVA.join_datasets(datasets)
         ds.save(self._list_outputs()['joined_dataset'])
         return runtime
 
@@ -156,7 +156,7 @@ class PerformML(BaseInterface):
     output_spec = PerformMLOutputSpec
 
     def _run_interface(self, runtime):
-        ds = neurometrics_rg.ANOVA.load_dataset(self.inputs.ds_file)
+        ds = ptsd.ANOVA.load_dataset(self.inputs.ds_file)
         
         kwargs = {}
         if self.inputs.classifier:
@@ -168,7 +168,7 @@ class PerformML(BaseInterface):
         if self.inputs.learning_curve:
             kwargs['learning_curve'] = self.inputs.learning_curve
                 
-        results = neurometrics_rg.ANOVA.do_session(ds,
+        results = ptsd.ANOVA.do_session(ds,
                                                    **kwargs)
 
         with gzip.open(self._list_outputs()['results_file'],'wb') as f:
@@ -191,8 +191,8 @@ class PerformFA(BaseInterface):
     output_spec = PerformFAOutputSpec
 
     def _run_interface(self, runtime):
-        ds = neurometrics_rg.ANOVA.load_dataset(self.inputs.ds_file)
-        ha = neurometrics_rg.ANOVA.do_falign(ds,
+        ds = ptsd.ANOVA.load_dataset(self.inputs.ds_file)
+        ha = ptsd.ANOVA.do_falign(ds,
                                              self.inputs.classifier,
                                              self.inputs.scoring,
                                              self.inputs.targets)
@@ -217,10 +217,10 @@ class ApplyFA(BaseInterface):
     output_spec = ApplyFAOutputSpec
 
     def _run_interface(self, runtime):
-        ds = neurometrics_rg.ANOVA.load_dataset(self.inputs.ds_file)
+        ds = ptsd.ANOVA.load_dataset(self.inputs.ds_file)
         with gzip.open(self.inputs.ha_file,'rb') as f:
             ha = pickle.load(f)
-        fads = neurometrics_rg.ANOVA.apply_falign(ds, ha)
+        fads = ptsd.ANOVA.apply_falign(ds, ha)
         fads.save(self._list_outputs()['out_file'])
         return runtime
 

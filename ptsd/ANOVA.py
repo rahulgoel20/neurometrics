@@ -24,7 +24,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.grid_search import GridSearchCV
-from neurometrics_rg.neural_network import FeedForwardNeuralNetwork
+from ptsd.neural_network import FeedForwardNeuralNetwork
 
 
 import nibabel.freesurfer.io

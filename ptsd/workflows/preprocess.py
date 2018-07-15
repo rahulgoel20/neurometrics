@@ -8,7 +8,7 @@ import nipype.interfaces.utility as util
 import nipype.interfaces.fsl as fsl
 import nipype.pipeline.engine as pe
 
-import neurometrics_rg.interfaces.utils as nmutil
+import ptsd.interfaces.utils as nmutil
 
 from mvpa2.misc.io import ColumnData
 
