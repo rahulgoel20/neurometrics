@@ -202,7 +202,7 @@ def apply_falign(ds,
 def do_session(ds,
                clf = SVC(kernel='linear', probability=True),
                scoring = score,
-               targets = 'quantized_distance',
+               targets = 'Response',
                n_jobs = 1,
                n_features = 3000,
                learning_curve = False,
@@ -223,19 +223,19 @@ def do_session(ds,
 
     ds = ds.get_mapped(detrender)
 
-    ds = ds[numpy.logical_not(numpy.logical_or(ds.sa.move, ds.sa.cue)), :]
+    # ds = ds[numpy.logical_not(numpy.logical_or(ds.sa.move, ds.sa.cue)), :] #may need to change this line
 
     if ds.nfeatures > n_features:
         fs = SelectKBest(k=n_features)
-        fs.fit(ds.samples, ds.sa.search > 0)
+        fs.fit(ds.samples, ds.sa.Time > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
 
-    ds = ds[ds.sa.search > 0, :]
+    # ds = ds[ds.sa.search > 0, :] #No need for this statement anymore, earlier ds.sa.search > 0 was the real "game" 18 frames 2.5s TR so 45s
 
     if ds.nfeatures > n_features:
         ds = ds[:, fs.get_support()]
 
     logger.info('Configuring cross validation')
-    cv = StratifiedKFold(ds.sa.quantized_distance, n_folds=6)#FIXME: make this a function parameter
+    cv = StratifiedKFold(ds.sa.Response, n_folds=5)#FIXME: make this a function parameter
 
     logger.info('Beginning cross validation')
     scores = cross_val(clf,
