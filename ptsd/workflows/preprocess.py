@@ -101,8 +101,8 @@ def create_within_run_align_workflow(name='within_run_align', slice_timing_corre
         get_meta.inputs.meta_keys = {'RepetitionTime':'tr',
                                      'CsaImage.MosaicRefAcqTimes':'slice_times'}
 
-        select_slice_times = pe.Node(interface=util.Select(), name='select_slice_times')#FIXME: sometimes required depending on dicom
-        select_slice_times.inputs.index = [0]
+        #select_slice_times = pe.Node(interface=util.Select(), name='select_slice_times')#FIXME: sometimes required depending on dicom
+        #select_slice_times.inputs.index = [0]
 
     space_time_align = pe.Node(interface=nipy.SpaceTimeRealigner(), name='space_time_align')
 
@@ -116,9 +116,9 @@ def create_within_run_align_workflow(name='within_run_align', slice_timing_corre
     if slice_timing_correction:
         within_run_align.connect(inputs, 'in_file', get_meta, 'in_file')
         within_run_align.connect(get_meta, 'tr', space_time_align, 'tr')
-        within_run_align.connect(get_meta, 'slice_times', select_slice_times, 'inlist')#see above
-        within_run_align.connect(select_slice_times, 'out', space_time_align, 'slice_times')
-        #within_run_align.connect(get_meta, 'slice_times', space_time_align, 'slice_times')
+        #within_run_align.connect(get_meta, 'slice_times', select_slice_times, 'inlist')#see above
+        #within_run_align.connect(select_slice_times, 'out', space_time_align, 'slice_times')
+        within_run_align.connect(get_meta, 'slice_times', space_time_align, 'slice_times')
     
     within_run_align.connect(space_time_align, 'out_file', outputs, 'out_file')
     
