@@ -31,7 +31,7 @@ import nibabel.freesurfer.io
 
 logger = logging.getLogger(__name__)
 
-block_size = 18 #FIXME: figure out how to git rid of this
+block_size = 10 #FIXME: figure out how to git rid of this
 
 def vote(votes, classes=None, weights=None):
     if weights is None:
@@ -210,8 +210,7 @@ def do_session(ds,
 
     ds.sa['chunks'] = ['{}:{}'.format(sid,scan)
                        for sid, scan
-                       in zip(ds.sa['session_id'],
-                              ds.sa['run'])]
+                       in zip(ds.sa['session_id'])]
 
     ds.sa['targets'] = ds.sa[targets]
 
