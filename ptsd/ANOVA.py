@@ -210,7 +210,8 @@ def do_session(ds,
 
     ds.sa['chunks'] = ['{}:{}'.format(sid,scan)
                        for sid, scan
-                       in zip(ds.sa['session_id'])]
+                       in zip(ds.sa['session_id'],
+                              ds.sa['run'])]
 
     ds.sa['targets'] = ds.sa[targets]
 
