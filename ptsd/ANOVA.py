@@ -114,7 +114,7 @@ def nifti_to_dataset(nifti_file, attr_file=None, annot_file=None, subject_id=Non
         logger.info('Loading attributes: {}'.format(attr_file))
         attr = ColumnData(attr_file)
         valid = min(ds.nsamples, attr.nrows)
-        valid = int(valid/180)*180 #FIXME: ...
+        valid = int(valid/320)*320 #FIXME: ...Changed to reflex no. of frames per run
         logger.info('valid samples: {}'.format(valid))
         ds = ds[:valid,:]
         for k in attr.keys():
