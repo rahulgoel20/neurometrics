@@ -206,7 +206,8 @@ def do_session(ds,
                n_jobs = 1,
                n_features = 3000,
                learning_curve = False,
-               permutation_test = False):
+               permutation_test = False,
+               n_folds = 5):
 
     ds.sa['chunks'] = ['{}:{}'.format(sid,scan)
                        for sid, scan
@@ -235,7 +236,7 @@ def do_session(ds,
         ds = ds[:, fs.get_support()]
 
     logger.info('Configuring cross validation')
-    cv = StratifiedKFold(ds.sa.Response, n_folds=5)#FIXME: make this a function parameter
+    cv = StratifiedKFold(ds.sa.Response, n_folds)#FIXME: make this a function parameter
 
     logger.info('Beginning cross validation')
     scores = cross_val(clf,
