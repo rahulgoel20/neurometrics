@@ -224,19 +224,15 @@ def do_session(ds,
 
     ds = ds.get_mapped(detrender)
 
-    # ds = ds[numpy.logical_not(numpy.logical_or(ds.sa.move, ds.sa.cue)), :] #may need to change this line
-
     if ds.nfeatures > n_features:
         fs = SelectKBest(k=n_features)
-        fs.fit(ds.samples, ds.sa.Time > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
-
-    # ds = ds[ds.sa.search > 0, :] #No need for this statement anymore, earlier ds.sa.search > 0 was the real "game" 18 frames 2.5s TR so 45s
+        fs.fit(ds.samples, ds.sa.Response > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
 
     if ds.nfeatures > n_features:
         ds = ds[:, fs.get_support()]
 
     logger.info('Configuring cross validation')
-    cv = StratifiedKFold(ds.sa.Response, n_folds)#FIXME: make this a function parameter
+    cv = StratifiedKFold(ds.sa.Response, n_folds)
 
     logger.info('Beginning cross validation')
     scores = cross_val(clf,
