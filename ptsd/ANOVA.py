@@ -224,6 +224,8 @@ def do_session(ds,
 
     ds = ds.get_mapped(detrender)
 
+    ds.samples = ds.samples[:, ~numpy.all(ds.samples ==0, axis = 0)] #added to remove columns/voxels with 0 intensity throughout scan, so for all rows
+    
     if ds.nfeatures > n_features:
         fs = SelectKBest(k=n_features)
         fs.fit(ds.samples, ds.sa.Response > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
