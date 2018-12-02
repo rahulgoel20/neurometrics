@@ -269,8 +269,8 @@ def do_session(ds,
         
     result = {}
     result['datetime'] = datetime.datetime.now()
-    if ds.nfeatures > n_features:
-        result['fs'] = fs
+    #if ds.nfeatures > n_features:
+    #   result['fs'] = fs
     result['mapper'] = ds.mapper
     #result['clf'] = clf
     #result['cv'] = cv
