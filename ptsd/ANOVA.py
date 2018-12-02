@@ -204,7 +204,7 @@ def do_session(ds,
                scoring = score,
                targets = 'Response',
                n_jobs = 1,
-               n_features = 3000,
+               n_features = 5124,
                learning_curve = False,
                permutation_test = False,
                n_folds = 5):
@@ -220,18 +220,18 @@ def do_session(ds,
 
     from mvpa2.mappers.detrend import PolyDetrendMapper
 
-    detrender = PolyDetrendMapper(polyord = 1, chunks_attr='chunks')
+    detrender = PolyDetrendMapper(polyord = 1, chunks_attr='chunks') #this helps remove any trend in fMRI - scanner drift for example
 
     ds = ds.get_mapped(detrender)
 
-    ds.samples = ds.samples[:, ~numpy.all(ds.samples ==0, axis = 0)] #added to remove columns/voxels with 0 intensity throughout scan, so for all rows
-    
-    if ds.nfeatures > n_features:
-        fs = SelectKBest(k=n_features)
-        fs.fit(ds.samples, ds.sa.Response > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
+    #ds.samples = ds.samples[:, ~numpy.all(ds.samples ==0, axis = 0)] #added to remove columns/voxels with 0 intensity throughout scan, so for all rows
 
-    if ds.nfeatures > n_features:
-        ds = ds[:, fs.get_support()]
+    #if ds.nfeatures > n_features:
+    #    fs = SelectKBest(k=n_features)
+    #    fs.fit(ds.samples, ds.sa.Response > 0) #instead of ds.sa.search we have ds.sa.Time basically now pick all samples
+
+    #if ds.nfeatures > n_features:
+    #   ds = ds[:, fs.get_support()]
 
     logger.info('Configuring cross validation')
     cv = StratifiedKFold(ds.sa.Response, n_folds)
@@ -289,27 +289,3 @@ def do_session(ds,
         result['pvalue'] = None
 
     return result
-       
-#logging.basicConfig(level=logging.INFO)
-
-#logger = logging.getLogger(__name__)
-
-#sessions = ['S010614af',
-#            'S010614drB',
-#            'S040414drB',
-#            'S040414jkA',
-#	    'S042814vs',
-#            'S050214af']
-        
-#logger.info('Configuring classifier')
-#fs = SelectKBest(k = 3000)
-#svc = SVC(kernel='linear')
-#nn = FeedForwardNeuralNetwork()
-#clf = Pipeline([('ANOVA',fs),('Classifier',svc)])               
-
-#results = [do_session(session,clf=svc) for session in sessions]
-
-
-
- 
-
