@@ -59,8 +59,8 @@ def score(clf, X, y):
             'precision':precision_score(y,clf.predict(X),average='weighted'),
             'recall':recall_score(y,clf.predict(X),average='weighted'),
             'f1':f1_score(y,clf.predict(X),average='weighted'),
-            'block_vote':block_vote_score(y,clf.predict(X),block_size),
-            'block_proba':block_probability_score(y,clf.predict(X),clf.predict_proba(X),block_size) if clf.probability else None,
+            #'block_vote':block_vote_score(y,clf.predict(X),block_size),
+            #'block_proba':block_probability_score(y,clf.predict(X),clf.predict_proba(X),block_size) if clf.probability else None,
             'y':y,
             'predict':clf.predict(X),
             'predict_proba':clf.predict_proba(X) if clf.probability else None}
