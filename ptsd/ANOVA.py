@@ -5,6 +5,7 @@ import datetime
 import h5py
 import operator
 import math
+import sklearn
 from os import path
 from mvpa2.misc.io import ColumnData
 from mvpa2.datasets import dataset_wizard
